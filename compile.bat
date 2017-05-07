@@ -1,1 +1,2 @@
-g++ -std=c++14 FlashSync.cpp Config.cpp ConfigComputer.cpp ConfigFlash.cpp FileOperations.cpp Interaction.cpp ListedFile.cpp Synchronization.cpp uifstream.cpp uofstream.cpp -o FlashSync.exe -lboost_system -lboost_filesystem -lboost_locale -lboost_random
+mkdir build
+g++ -std=c++14 source\FlashSync.cpp source\Config.cpp source\ConfigComputer.cpp source\ConfigFlash.cpp source\FileOperations.cpp source\Interaction.cpp source\ListedFile.cpp source\Synchronization.cpp source\uifstream.cpp source\uofstream.cpp -o build\FlashSync.exe -lboost_system -lboost_filesystem -lboost_locale -lboost_random
