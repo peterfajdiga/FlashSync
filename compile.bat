@@ -1,0 +1,1 @@
+g++ -std=c++14 FlashSync.cpp Config.cpp ConfigComputer.cpp ConfigFlash.cpp FileOperations.cpp Interaction.cpp ListedFile.cpp Synchronization.cpp uifstream.cpp uofstream.cpp -o FlashSync.exe -lboost_system -lboost_filesystem -lboost_locale -lboost_random

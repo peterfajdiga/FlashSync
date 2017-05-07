@@ -1,0 +1,6 @@
+Config::dir
+    directory containing configuration
+Sync directory
+    Directory on the computer that needs to be synced
+Path file
+    One of the files in ConfigComputer::dir containing the path of the sync directory for the flash drive after which it is named
