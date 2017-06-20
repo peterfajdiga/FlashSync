@@ -172,6 +172,12 @@ namespace {
                 break;
             }
             case ACTION_DEL: {
+                if (iListed->cmpOwners(computer->id)) {
+                    // file was restored
+                    assert(lastWriteTime > iListed->lastWriteTime);
+                    iListed->syncToFlash(hash, computerFilename);
+                    break;
+                }
                 if (iListed->cmpOldHashes(hash)) {
                     // safe to delete
                     iListed->delFromComputer(computerFilename);
