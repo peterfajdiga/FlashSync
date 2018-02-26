@@ -34,6 +34,7 @@ namespace {
     
     void conflict(fs::path filename, hash_t hash, bool deleted = false);
     void warnTimestampNotGreater(fs::path filename, bool deleted = false);
+    void warnTimestampNotLesser(fs::path filename);
     
     template<typename T>
     void vectorOrderedInsert(std::vector<T>& v, const T& element);
@@ -172,7 +173,10 @@ namespace {
                 }
                 if (iListed->cmpOldHashes(hash)) {
                     // computer file is older than flash
-                    assert(lastWriteTime < iListed->lastWriteTime);
+                    if (lastWriteTime >= iListed->lastWriteTime) {
+                        std::cout << "Remote file changed" << std::endl;
+                        warnTimestampNotLesser(computerFilename);
+                    }
                     // sync the file
                     iListed->syncToComputer(computerFilename);
                     break;
@@ -282,6 +286,20 @@ namespace {
         std::cout << "Warning: Timestamp of modified file not larger than that of stored." <<
             "\n\tComputer file: " << computerFilename <<
             "\n\tFlash file: " << (deleted ? "*deleted*" : iListed->fullFlashFilename()) <<
+            std::endl;
+        
+        getConfirmation:
+        std::cout << "\n\rCheck files and type [y] to continue: ";
+        switch (Interaction::askForChar()) {
+            case 'y': return;
+            default:  goto getConfirmation;
+        }
+    }
+    
+    void warnTimestampNotLesser(fs::path computerFilename) {
+        std::cout << "Warning: Timestamp of computer's file not lesser than that of stored (modified)." <<
+            "\n\tComputer file: " << computerFilename <<
+            "\n\tFlash file: " << iListed->fullFlashFilename() <<
             std::endl;
         
         getConfirmation:
