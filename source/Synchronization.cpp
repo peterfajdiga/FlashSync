@@ -33,6 +33,7 @@ namespace {
     bool hasNextListedFile();
     
     void conflict(fs::path filename, hash_t hash, bool deleted = false);
+    void warnTimestampNotGreater(fs::path filename, bool deleted = false);
     
     template<typename T>
     void vectorOrderedInsert(std::vector<T>& v, const T& element);
@@ -145,7 +146,11 @@ namespace {
                     break;
                 }
                 // computer file is newer than flash
-                assert(lastWriteTime > iListed->lastWriteTime);
+                // assert(lastWriteTime > iListed->lastWriteTime);
+                if (lastWriteTime <= iListed->lastWriteTime) {
+                    std::cout << "File changed" << std::endl;
+                    warnTimestampNotGreater(computerFilename);
+                }
                 iListed->syncToFlash(hash, computerFilename);
                 break;
             }
@@ -157,7 +162,11 @@ namespace {
                 }
                 if (iListed->cmpOwners(computer->id)) {
                     // computer file is newer than flash, since we already own the flash version
-                    assert(lastWriteTime > iListed->lastWriteTime);
+                    // assert(lastWriteTime > iListed->lastWriteTime);
+                    if (lastWriteTime <= iListed->lastWriteTime) {
+                        std::cout << "File changed" << std::endl;
+                        warnTimestampNotGreater(computerFilename);
+                    }
                     iListed->syncToFlash(hash, computerFilename);
                     break;
                 }
@@ -174,7 +183,11 @@ namespace {
             case ACTION_DEL: {
                 if (iListed->cmpOwners(computer->id)) {
                     // file was restored
-                    assert(lastWriteTime > iListed->lastWriteTime);
+                    // assert(lastWriteTime > iListed->lastWriteTime);
+                    if (lastWriteTime <= iListed->lastWriteTime) {
+                        std::cout << "File restored" << std::endl;
+                        warnTimestampNotGreater(computerFilename);
+                    }
                     iListed->syncToFlash(hash, computerFilename);
                     break;
                 }
@@ -262,6 +275,20 @@ namespace {
             default: {
                 goto resolveConflict;
             }
+        }
+    }
+    
+    void warnTimestampNotGreater(fs::path computerFilename, bool deleted) {
+        std::cout << "Warning: Timestamp of modified file not larger than that of stored." <<
+            "\n\tComputer file: " << computerFilename <<
+            "\n\tFlash file: " << (deleted ? "*deleted*" : iListed->fullFlashFilename()) <<
+            std::endl;
+        
+        getConfirmation:
+        std::cout << "\n\rCheck files and type [y] to continue: ";
+        switch (Interaction::askForChar()) {
+            case 'y': return;
+            default:  goto getConfirmation;
         }
     }
 
