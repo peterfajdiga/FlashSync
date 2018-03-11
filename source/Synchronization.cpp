@@ -72,27 +72,27 @@ void Synchronization::sync() {
     
     while (hasNextListedFile() || hasNextComputerFile()) {
         if (!hasNextComputerFile()) {
-            listedFileOnly();
+            listedFileOnly();               // sync file and advance listedFiles
             continue;
         }
         const fs::path filename = *iLocal;
         if (!fs::is_regular_file(filename)) {
-            iLocal++;
+            iLocal++;                       // advance computerFiles
             continue;
         }
         if (!hasNextListedFile()) {
-            computerFileOnly(filename);
+            computerFileOnly(filename);     // sync file and advance computerFiles
             continue;
         }
         
         const fs::path filenameRelative = relative(filename, computer->syncDir);
         int cmp = filenameRelative.compare(iListed->filename);
         if (cmp == 0) {
-            bothFiles(filename);
+            bothFiles(filename);            // sync file and advance both iterators
         } else if (cmp < 0) {
-            computerFileOnly(filename);
+            computerFileOnly(filename);     // sync file and advance computerFiles
         } else {
-            listedFileOnly();
+            listedFileOnly();               // sync file and advance listedFiles
         }
     }
 }
