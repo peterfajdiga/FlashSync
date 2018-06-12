@@ -192,6 +192,7 @@ uifstream& operator>> (uifstream& is, ListedFile& a) {
         }
     }
     std::cout << "";  // this somehow keeps the program from crashing
+    return is;
 }
 
 uofstream& operator<< (uofstream& os, const ListedFile& a) {
@@ -234,6 +235,7 @@ uifstream& operator>> (uifstream& is, std::set<T>& set) {
         is >> value;
         set.insert(value);
     }
+    return is;
 }
 
 template<typename T>
