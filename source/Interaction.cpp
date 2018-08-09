@@ -43,6 +43,6 @@ void Interaction::printHelp() {
         "  computers \tPrint all computer ids registered on the selected flash drive\n"
         "\nOptions:\n"
         "  -s        \tSilent mode\n"
-        "  -t        \tCompare timestamps instead of computing checksums for all files"
+        "  -t        \tCompare timestamps instead of computing checksums for all files\n"
         "  -h        \tPrint this message\n";
 }
